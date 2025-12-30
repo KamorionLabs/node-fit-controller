@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  DOCKERHUB_REPO: clark42/node-fit-controller
+  DOCKERHUB_REPO: kamorion/node-fit-controller
   GHCR_REPO: ghcr.io/kamorionlabs/node-fit-controller
 
 jobs:
