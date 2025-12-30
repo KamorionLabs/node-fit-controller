@@ -1,0 +1,45 @@
+Node Fit Controller has been installed!
+
+To enable automatic resource adjustment for your pods, add these annotations:
+
+  annotations:
+    nodefit.io/enabled: "true"
+    nodefit.io/strategy: "percent"  # or "fit" or "cap"
+
+Available strategies:
+  - percent: limit = min(original, percent% of node / pods_count)
+    Additional annotation: nodefit.io/percent: "80" (default)
+
+  - fit: limit = node_allocatable - other_pods_requests - buffer
+    Additional annotation: nodefit.io/buffer: "256Mi" (default)
+
+  - cap: limit = request (no burst allowed)
+
+Example deployment:
+
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: my-app
+  spec:
+    template:
+      metadata:
+        annotations:
+          nodefit.io/enabled: "true"
+          nodefit.io/strategy: "fit"
+          nodefit.io/buffer: "512Mi"
+      spec:
+        containers:
+        - name: app
+          resources:
+            requests:
+              memory: "2Gi"
+            limits:
+              memory: "4Gi"  # Will be adjusted based on node capacity
+
+Check controller logs:
+  kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "node-fit-controller.name" . }}
+
+Requirements:
+  - Kubernetes 1.34+ (In-Place Pod Vertical Scaling beta)
+  - Kubernetes 1.35+ (In-Place Pod Vertical Scaling GA)

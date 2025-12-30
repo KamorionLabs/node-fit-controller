@@ -1,0 +1,20 @@
+apiVersion: v2
+name: node-fit-controller
+description: Kubernetes controller for in-place pod resource adjustment based on node availability
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - kubernetes
+  - controller
+  - resources
+  - autoscaling
+  - in-place
+  - vertical-scaling
+home: https://github.com/KamorionLabs/node-fit-controller
+sources:
+  - https://github.com/KamorionLabs/node-fit-controller
+maintainers:
+  - name: KamorionLabs
+    url: https://github.com/KamorionLabs
+kubeVersion: ">=1.34.0-0"
