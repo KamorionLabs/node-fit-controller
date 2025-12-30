@@ -10,10 +10,63 @@ When pods have memory limits that exceed the node's allocatable resources, the L
 
 ## Requirements
 
+- Kubernetes 1.34+ (In-Place Pod Vertical Scaling Beta)
 - Kubernetes 1.35+ (In-Place Pod Vertical Scaling GA)
 - Pods must opt-in via annotations
 
 ## Installation
+
+### Using Helm (Recommended)
+
+```bash
+# Add the Helm repository (coming soon)
+# helm repo add kamorion https://kamorionlabs.github.io/helm-charts
+
+# Or install directly from the repository
+git clone https://github.com/KamorionLabs/node-fit-controller.git
+cd node-fit-controller
+
+# Install with default values
+helm upgrade --install node-fit-controller ./charts/node-fit-controller \
+  --namespace nodefit-system \
+  --create-namespace
+
+# Or with custom values
+helm upgrade --install node-fit-controller ./charts/node-fit-controller \
+  --namespace nodefit-system \
+  --create-namespace \
+  --set image.tag=latest \
+  --set resources.limits.memory=256Mi
+```
+
+### Using Pre-built Images
+
+Images are available on:
+- **Docker Hub**: `kamorion/node-fit-controller`
+- **GitHub Container Registry**: `ghcr.io/kamorionlabs/node-fit-controller`
+
+```bash
+# Pull the image
+docker pull kamorion/node-fit-controller:latest
+# or
+docker pull ghcr.io/kamorionlabs/node-fit-controller:latest
+```
+
+### Helm Values
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `image.repository` | Image repository | `kamorion/node-fit-controller` |
+| `image.tag` | Image tag | `appVersion` |
+| `replicaCount` | Number of replicas | `1` |
+| `resources.limits.memory` | Memory limit | `128Mi` |
+| `resources.requests.cpu` | CPU request | `10m` |
+| `resources.requests.memory` | Memory request | `64Mi` |
+| `leaderElection.enabled` | Enable leader election | `true` |
+| `tolerations` | Pod tolerations | `[]` |
+| `nodeSelector` | Node selector | `{}` |
+
+### Building from Source
 
 ```bash
 # Clone the repository
@@ -159,7 +212,7 @@ spec:
 
 ## Limitations
 
-- Requires Kubernetes 1.35+ for in-place resource updates
+- Requires Kubernetes 1.34+ for in-place resource updates (Beta in 1.34, GA in 1.35)
 - Only adjusts limits, not requests
 - CPU limits are only set if already present (best practice is to not set CPU limits)
 - Works only on running pods (not pending)
